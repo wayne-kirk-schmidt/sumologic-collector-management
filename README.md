@@ -48,8 +48,8 @@ Script Names and Purposes
 ├── delete
 │   └── delete_collector		-- delete a collector based on unique id
 ├── list
-│   ├── list_collector			-- list all collectors that exist within a specific organization
-│   └── list_item			-- list all sources that are associated with a given collector and organization
+│   ├── list_collector			-- list collectors that exist within a specific organization
+│   └── list_item			-- list sources associated with a given collector and organization
 └── query
 ```
 

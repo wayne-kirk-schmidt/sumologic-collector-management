@@ -40,17 +40,16 @@ Script Names and Purposes
 =========================
 
 ```bash
-.
 ├── clone
-│   └── clone_collector
+│   └── clone_collector 		-- clone a specific collector to a new name
 ├── create
-│   ├── create_collector
-│   └── create_source
+│   ├── create_collector		-- create a hosted collector
+│   └── create_source			-- create a web endpoint source
 ├── delete
-│   └── delete_collector
+│   └── delete_collector		-- delete a collector based on unique id
 ├── list
-│   ├── list_collector
-│   └── list_item
+│   ├── list_collector			-- list all collectors in a specific organization
+│   └── list_item			-- list all sources for a given collector and organization
 └── query
 ```
 

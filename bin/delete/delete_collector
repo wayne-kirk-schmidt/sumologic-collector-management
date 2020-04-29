@@ -69,6 +69,7 @@ initialize_environment () {
 
   [[ ${BASH_VERSION%%.*} -ge 4 ]] 		|| complain_and_exit 1 "script requires bash 4 or higher to run"
   [[ -z $sumo_cid ]] 				&& complain_and_exit 1 "sumo_cid not defiined"
+  [[ -z $sumo_type ]] 				&& sumo_type="collector"
 
 }
 

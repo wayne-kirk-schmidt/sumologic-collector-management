@@ -56,24 +56,38 @@ Script Names and Purposes
 Use Case Usage
 ==============
 
-1. To list the collectors you have
+1. To list the collectors you can issue:
 
-   list_collector -a "<apikey>:<apistrng>" -t collectors -s jp
+   list_collector -a APIKEY:APISTRING -s jp
 
-2. To create a hosted list the collectors you have
+2. To create a hosted collector you can issue:
 
-   list_collector -a "<apikey>:<apistrng>" -t collectors -s jp
+   create_collector -a APIKEY:APISTRING -s jp -n "sample-name-1"
 
+NOTE: ths returns the ID of the created collector -- COLLECTORID
 
+3. To create a web endpoint source for a given collector you can issue:
 
+  create_source -a APIKEY:APISTRING -s jp -n "sample-source-2" -i COLLECTORID
 
+NOTE: ths returns the ID of the created sourrce-- SOURCEID
+
+4. To clone a given collector to a new collector name you can issue:
+
+   clone_collector -a APIKEY:APISTRING -s jp -n "sample-name-444" -i COLLECTORID -d
+
+5. To delete a specific collector you can issue:
+
+   delete_collector -a APIKEY:APISTRING -s jp -i COLLECTORID
+
+NOTE: this creates a backup file of the collector in /tmp
 
 To Do List:
 ===========
 
-* extend to more Sumo Logic Items
+* extend to more Sumo Logic iAPI objects
 
-* have list_collector become list_items for all Suo Logic Items
+* extend to more Sumo Logic API actons
 
 License
 =======

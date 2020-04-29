@@ -101,7 +101,7 @@ execute_request () {
   "${jqcmd}" -r 'keys[] as $k | "\(.[$k] | .id) \(.[$k] | .name)"' | \
   while read -r src_id src_name
   do
-    [ "${verboseflag}" ] && echo "querying old collector sources: ... $src_id i ... $src_name ..."
+    [ "${verboseflag}" ] && echo "querying old collector sources: ... $src_id ... $src_name ..."
     "${curlcmd}" -s -u "${sumo_apikey}" -X GET "${src_c_url}" | \
     sed "s/${src_name}/${sumo_name}/g" | "${jqcmd}" 'del(.collector["id", "links"])' > "${ctmpfile}"
 
@@ -127,6 +127,7 @@ execute_request () {
           "${jqcmd}" -r 'keys[] as $k | "\(.[$k] | .id)"' 
         )
         [ "${verboseflag}" ] && echo "cloning sources: ... $src_s_id ... $dst_s_id ..."
+        rm -f "${stmpfile}"
     done
   done
 }
@@ -137,6 +138,7 @@ main_logic () {
 
   initialize_environment
   initialize_variables
+  initialize_apiarray
   execute_request
 
 }

@@ -53,11 +53,20 @@ Script Names and Purposes
 └── query
 ```
 
+Use Case Usage
+==============
+
+1. To list the collectors you have
+
+   list_collector -a "<apikey>:<apistrng>" -t collectors -s jp
+
+2. To create a hosted list the collectors you have
+
+   list_collector -a "<apikey>:<apistrng>" -t collectors -s jp
 
 
 
-General Usage
-=============
+
 
 To Do List:
 ===========

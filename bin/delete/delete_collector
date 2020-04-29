@@ -35,34 +35,29 @@ initialize_variables () {
 
   base=$( ls -Ld "$PWD" )			&& export base
 
-  scriptname="${0%.*}"				&& export scriptname
-  scripttag=$( basename "$scriptname" )		&& export scripttag
+  scriptname="${0%.*}"                          && export scriptname
+  scripttag=$( basename "$scriptname" )         && export scripttag
 
-  cmddir=$( dirname "${scriptname}" )		&& export cmddir
-  bindir=$( cd "$cmddir" ; pwd -P . )		&& export bindir
+  cmddir=$( dirname "${scriptname}" )           && export cmddir
+  actiondir=$( cd "$cmddir" ; pwd -P )          && export actiondir
+  bindir=$( dirname "${actiondir}" )            && export bindir
+  basedir=$( dirname "${bindir}" )              && export basedir
 
-  basedir=$( dirname "${bindir}" )
+  etcdir="$basedir/etc"                         && export etcdir
+  cfgdir="$basedir/cfg"                         && export cfgdir
+  jsondir="$basedir/json"                       && export jsondir
 
+  dstamp=$(date '+%Y%m%d')                      && export dstamp
+  tstamp=$(date '+%H%M%S')                      && export tstamp
+  lstamp="${dstamp}.${tstamp}"                  && export lstamp
 
-  etcdir="$basedir/etc"				&& export etcdir
-  cfgdir="$basedir/cfg" 			&& export cfgdir
-
-  dstamp=$(date '+%Y%m%d')          		&& export dstamp
-  tstamp=$(date '+%H%M%S')          		&& export tstamp
-  lstamp="${dstamp}.${tstamp}"			&& export lstamp
 
   verboseflag=${verboseflag:-"false"}		&& export verboseflag
   content="Content-Type: application/json" 	&& export content
   jqcmd=$( which jq )				&& export jqcmd
   curlcmd=$( which curl )			&& export curlcmd
 
-  sumo_target="${sumo_type:-"undefined"}"	&& export sumo_target
-  [[ $sumo_type =~ "undefined" ]] && complain_and_exit 1 "sumo_type not defiined"
-
-  sumo_myid="${sumo_id:-"undefined"}"		&& export sumo_myid
-  [[ $sumo_myid =~ "undefined" ]] && complain_and_exit 1 "sumo_id not defiined"
-
-  backup="/tmp/${sumo_target}.${lstamp}.json"	&& export bkupfile
+  backup="/tmp/${sumo_type}.${lstamp}.json"	&& export bkupfile
 
 }
 
@@ -72,7 +67,8 @@ initialize_environment () {
   PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH"
   export PATH
 
-  [[ ${BASH_VERSION%%.*} -ge 4 ]] || complain_and_exit 1 "script requires bash 4 or higher to run"
+  [[ ${BASH_VERSION%%.*} -ge 4 ]] 		|| complain_and_exit 1 "script requires bash 4 or higher to run"
+  [[ -z $sumo_cid ]] 				&& complain_and_exit 1 "sumo_cid not defiined"
 
 }
 
@@ -85,18 +81,25 @@ complain_and_exit () {
         
 }
 
+initialize_apiarray () {
+
+  declare -Ag name2url
+  name2url[collector]="https://api.${sumo_site}.sumologic.com/api/v1/collectors/${sumo_cid}"
+
+}
+
 execute_request () {
 
   ${debugflag}
 
-  sumo_target_url="https://api.${sumo_site}.sumologic.com/api/v1/${sumo_target}/${sumo_myid}"
+  sumo_target_url="${name2url[collector]}"
 
-  [ "${verboseflag}" ] && echo "archiving existing ${sumo_target} ... $sumo_myid ..."
+  [ "${verboseflag}" ] && echo "archiving existing ${sumo_type} ... $sumo_cid ..."
 
   "${curlcmd}" -s -u "${sumo_apikey}" -X GET "${sumo_target_url}" > "${backup}" || \
-  complain_and_exit 111 "unable to query $sumo_type - $sumo_id"
+  complain_and_exit 111 "unable to query $sumo_type - $sumo_cid"
 
-  [ "${verboseflag}" ] && echo "deleting  existing ${sumo_target} ... $sumo_myid ..."
+  [ "${verboseflag}" ] && echo "deleting  existing ${sumo_type} ... $sumo_cid ..."
   "${curlcmd}" -s -u "${sumo_apikey}" -X DELETE "${sumo_target_url}"
 
 }
@@ -107,8 +110,8 @@ main_logic () {
 
   initialize_environment
   initialize_variables
+  initialize_apiarray
   execute_request
-  
 
 }
   
@@ -120,7 +123,7 @@ do
     d) debugflag='set -x'	; export debugflag ;;
     s) sumo_site=$OPTARG	; export sumo_site ;;
     a) sumo_apikey=$OPTARG	; export sumo_apikey ;;
-    i) sumo_id=$OPTARG		; export sumo_id ;;
+    i) sumo_cid=$OPTARG		; export sumo_cid ;;
     n) sumo_name=$OPTARG	; export sumo_name ;;
     t) sumo_type=$OPTARG	; export sumo_type ;;
     *) display_help ; exit 0 ;;

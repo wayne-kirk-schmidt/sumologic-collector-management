@@ -38,9 +38,9 @@ initialize_variables () {
   scripttag=$( basename "$scriptname" )		&& export scripttag
 
   cmddir=$( dirname "${scriptname}" )		&& export cmddir
-  bindir=$( cd "$cmddir" ; pwd -P . )		&& export bindir
-
-  basedir=$( dirname "${bindir}" )
+  actiondir=$( cd "$cmddir" ; pwd -P )		&& export actiondir
+  bindir=$( dirname "${actiondir}" )		&& export bindir
+  basedir=$( dirname "${bindir}" )		&& export basedir
 
   etcdir="$basedir/etc"				&& export etcdir
   cfgdir="$basedir/cfg" 			&& export cfgdir
@@ -55,7 +55,7 @@ initialize_variables () {
   jqcmd=$( which jq )				&& export jqcmd
   curlcmd=$( which curl )			&& export curlcmd
 
-  csrcfile="$jsonddir/collector.json"		&& export csrcfile
+  csrcfile="$jsondir/collector.json"		&& export csrcfile
   cdstfile="/tmp/collector.$lstamp.json"	&& export cdstfile
 
 }
@@ -65,9 +65,9 @@ initialize_environment () {
   ${debugflag}
   PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH"
   export PATH
-  rm -f "${csrcfile}" "${cdstfile}"
 
-  [[ ${BASH_VERSION%%.*} -ge 4 ]] || complain_and_exit 1 "script requires bash 4 or higher to run"
+  [[ ${BASH_VERSION%%.*} -ge 4 ]]               || complain_and_exit 1 "script requires bash 4 or higher to run"
+  [[ -z $sumo_cid ]]                            && sumo_cid="undefined"
 
 }
 
@@ -80,17 +80,25 @@ complain_and_exit () {
 
 }
 
+initialize_apiarray () {
+
+  declare -Ag name2url
+  name2url[collectors]="https://api.${sumo_site}.sumologic.com/api/v1/collectors"
+
+}
+
 execute_request () {
 
   ${debugflag}
 
-  sumohttp="https://api.${sumo_site}.sumologic.com/api/v1/collectors"
+  sumo_target_url="${name2url[collectors]}"
 
   [ "${verboseflag}" ] && echo "creating new collector: ... $sumo_name ..."
-  sed "s/%%XXX%%/${sumo_name}/g" "${csrcfile}" > "${cdstfile}"
-
-  "${curlcmd}" -s -u "${sumo_apikey}" -X POST -H "${content}" -T "${cdstfile}" "${sumohttp}" | \
+  sed "s/%%XXX%%/$sumo_name/g" "${csrcfile}" > "${cdstfile}"
+  
+  "${curlcmd}" -s -u "${sumo_apikey}" -X POST -H "${content}" -T "${cdstfile}" "${sumo_target_url}" | \
   "${jqcmd}" -r 'keys[] as $k | "\(.[$k] | .id)"'
+
   rm -f "${cdstfile}"
 
 }
@@ -101,6 +109,7 @@ main_logic () {
 
   initialize_environment
   initialize_variables
+  initialize_apiarray
   execute_request
 
 }

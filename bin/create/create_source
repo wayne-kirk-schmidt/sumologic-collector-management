@@ -36,16 +36,16 @@ initialize_variables () {
   base=$( ls -Ld "$PWD" )			&& export base
 
   scriptname="${0%.*}"				&& export scriptname
-  scripttag=$( basename "$scriptname" )		&& export scripttag
+  scripttag=$( basename "$scriptname" )         && export scripttag
 
-  cmddir=$( dirname "${scriptname}" )		&& export cmddir
-  bindir=$( cd "$cmddir" ; pwd -P . )		&& export bindir
+  cmddir=$( dirname "${scriptname}" )           && export cmddir
+  actiondir=$( cd "$cmddir" ; pwd -P )          && export actiondir
+  bindir=$( dirname "${actiondir}" )            && export bindir
+  basedir=$( dirname "${bindir}" )              && export basedir
 
-  basedir=$( dirname "${bindir}" )
-
-  etcdir="$basedir/etc"				&& export etcdir
-  cfgdir="$basedir/cfg" 			&& export cfgdir
-  jsondir="$basedir/json" 			&& export jsondir
+  etcdir="$basedir/etc"                         && export etcdir
+  cfgdir="$basedir/cfg"                         && export cfgdir
+  jsondir="$basedir/json"                       && export jsondir
 
   dstamp=$(date '+%Y%m%d')          		&& export dstamp
   tstamp=$(date '+%H%M%S')          		&& export tstamp
@@ -66,9 +66,9 @@ initialize_environment () {
   ${debugflag}
   PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH"
   export PATH
-  rm -f "${sdstfile}"
 
-  [[ ${BASH_VERSION%%.*} -ge 4 ]] || complain_and_exit 1 "script requires bash 4 or higher to run"
+  [[ ${BASH_VERSION%%.*} -ge 4 ]]               || complain_and_exit 1 "script requires bash 4 or higher to run"
+  [[ -z $sumo_cid ]]                            && complain_and_exit 1 "sumo_cid not defiined"
 
 }
 
@@ -81,28 +81,38 @@ complain_and_exit () {
 
 }
 
+initialize_apiarray () {
+
+  declare -Ag name2url
+  name2url[collectors]="https://api.${sumo_site}.sumologic.com/api/v1/collectors"
+  name2url[collector]="https://api.${sumo_site}.sumologic.com/api/v1/collectors/${sumo_cid}"
+
+}
+
 execute_request () {
 
   ${debugflag}
 
-  sumohttp="https://api.${sumo_site}.sumologic.com/api/v1/collectors"
-  src_c_url="${sumohttp}/${sumo_id}"
-  src_s_url="${sumohttp}/${sumo_id}/sources"
+  sumo_target_url="${name2url[collectors]}"
+
+  src_c_url="${sumo_target_url}/${sumo_cid}"
+  src_s_url="${sumo_target_url}/${sumo_cid}/sources"
 
   (
     "${curlcmd}" -s -u "${sumo_apikey}" -X GET "${src_c_url}" | \
     "${jqcmd}" -r 'keys[] as $k | "\(.[$k] | .id) \(.[$k] | .name)"'
-  ) | read -r c_id c_name 
+  ) | while read -r c_id c_name 
+  do
+    [ "${verboseflag}" ] && echo "creating source: ... $sumo_name for $c_name"
 
-  [ "${verboseflag}" ] && echo "creating source: ... $sumo_name for $c_name"
+    sed "s/%%XXX%%/${c_name}/g;s/%%YYY%%/${sumo_name}/g" "${ssrcfile}" | \
+    "${jqcmd}" '. += {"api.version": "v1"}' > "${sdstfile}"
 
-  sed "s/%%XXX%%/${c_name};s/%%YYY%%/${sumo_name}/g" ${ssrcfile} | \
-  "${jqcmd}" '. += {"api.version": "v1"}' > "${sdstfile}"
+    "${curlcmd}" -s -u "${sumo_apikey}" -X POST -H "${content}" -T "${sdstfile}" "${src_s_url}" | \
+    "${jqcmd}" -r 'keys[] as $k | "\(.[$k] | .id)"' 
 
-  "${curlcmd}" -s -u "${sumo_apikey}" -X POST -H "${content}" -T "${stmpfile}" "${src_s_url}" | \
-  "${jqcmd}" -r 'keys[] as $k | "\(.[$k] | .id)"' 
-
-  rm -f "${sdstfile}"
+    rm -f "${sdstfile}"
+  done
 
 }
 
@@ -112,6 +122,7 @@ main_logic () {
 
   initialize_environment
   initialize_variables
+  initialize_apiarray
   execute_request
 
 }
@@ -124,7 +135,7 @@ do
     d) debugflag='set -x'	; export debugflag ;;
     s) sumo_site=$OPTARG	; export sumo_site ;;
     a) sumo_apikey=$OPTARG	; export sumo_apikey ;;
-    i) sumo_id=$OPTARG		; export sumo_id ;;
+    i) sumo_cid=$OPTARG		; export sumo_cid ;;
     n) sumo_name=$OPTARG	; export sumo_name ;;
     *) display_help ; exit 0 ;;
   esac

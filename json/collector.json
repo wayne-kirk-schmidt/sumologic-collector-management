@@ -1,0 +1,11 @@
+{
+  "collector":{
+    "name":"%%XXX%%",
+    "timeZone":"Etc/UTC",
+    "fields":{
+      
+    },
+    "collectorType":"Hosted",
+    "collectorVersion":"",
+  }
+}

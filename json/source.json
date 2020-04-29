@@ -1,0 +1,11 @@
+{
+  "api.version": "v1",
+  "source":{
+    "name":"%%XXX%%-%%YYY%%",
+    "description":"%%XXX%% - %%YYY%%",
+    "category":"sample/%%XXX%%/%%YYY%%",
+    "encoding":"UTF-8",
+    "sourceType":"HTTP",
+    "messagePerRequest":false
+  }
+}

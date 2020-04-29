@@ -2,7 +2,7 @@
 Bash API Tools
 ==============
 
-This is a collection of DevOps tools written in bash, that serve as a wrapper for the Sumo Logic API.
+This is a collection of DevOps tools that serve as a wrapper for the Sumo Logic API.
 
 Installing the Scripts
 =======================
@@ -10,7 +10,7 @@ Installing the Scripts
 The scripts are command line based, designed to be used within a batch script or DevOPs tool such as Chef or Ansible.
 Written in bash, all scripts are listed below, and the dependencies are on a Unix/Linux tool set.
 
-You will need to use Bash 4+ as some of thhe scripts use associative arrays in the scripts.
+You will need to use Bash 4+ as some of the scripts use associative arrays in the scripts.
 
 Please follow the following steps to install:
 
@@ -24,7 +24,7 @@ Please follow the following steps to install:
 
        It can be downloaded from https://git-scm.com/downloads
     
-    3. Open a new shell/command prompt. Cd to the folder where you want to install the scripts.
+    3. Open a new shell/command prompt. Change to the folder where you want to install the scripts.
     
     4. Clone this repo using the following command:
     
@@ -36,33 +36,36 @@ Please follow the following steps to install:
 
        cd sumocli-bash/bin
 
-    6. Test the scripts can produce a basic help page:
-
-       list_items.bash -h
-        
 Script Names and Purposes
 =========================
 
-Scripts and Functions:
+```bash
+.
+├── clone
+│   └── clone_collector
+├── create
+│   ├── create_collector
+│   └── create_source
+├── delete
+│   └── delete_collector
+├── list
+│   ├── list_collector
+│   └── list_item
+└── query
+```
 
-    1. create_collector.bash - will create a hostedd collector
 
-    2. create_source.bash - will create a web end point soource
 
-    3. clone_collector.bash - will coopy the contents of one collector into another, including soources
 
-    4. delete_collector.bash - will delete a collector, though creates a backup first
-        
-    5. list_item.bash - will show the details on a specific item
-        
+General Usage
+=============
+
 To Do List:
 ===========
 
-* build list items to have all sumo items
+* extend to more Sumo Logic Items
 
-* build list items show sample invocations
-
-* organize morer examples into a subdirectory based on actions
+* have list_collector become list_items for all Suo Logic Items
 
 License
 =======

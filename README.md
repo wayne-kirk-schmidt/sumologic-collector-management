@@ -28,13 +28,13 @@ Please follow the following steps to install:
     
     4. Clone this repo using the following command:
     
-       git clone git@github.com:wks-sumo-logic/sumocli-bash.git
+       git clone git@github.com:wks-sumo-logic/sumocli-bash-collectors.git
 
-       This will create a new folder sumocli-bash
+       This will create a new folder sumocli-bash-collectors
     
     5. Change into the this folder. 
 
-       cd sumocli-bash/bin
+       cd sumocli-bash-collectors/bin
 
 Script Names and Purposes
 =========================

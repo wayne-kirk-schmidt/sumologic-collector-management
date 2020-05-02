@@ -2,7 +2,7 @@
 Bash API Tools
 ==============
 
-This is a collection of DevOps tools that serve as a wrapper for the Sumo Logic API.
+This is a small set of tools that are a wrapper for the Sumo Logic API for collectors and sources
 
 Installing the Scripts
 =======================

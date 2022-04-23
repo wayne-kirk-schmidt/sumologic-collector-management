@@ -33,22 +33,26 @@ Please follow the following steps to install:
 Script Names and Purposes
 =========================
 
-```bash
-├── clone
-│   └── clone_collector 		-- clone a specific collector to a new name
-├── create
-│   ├── create_collector		-- create a hosted collector
-│   └── create_source			-- create a web endpoint based data-source
-├── delete
-│   └── delete_collector		-- delete a collector based on unique id
-├── list
-│   ├── list_collector			-- list collectors that exist within a specific organization
-│   └── list_item			-- list sources associated with a given collector and organization
-└── query
+```
+bin
+├── bash
+│   ├── clone
+│   │   └── clone_collector
+│   ├── create
+│   │   ├── create_collector
+│   │   └── create_source
+│   ├── delete
+│   │   └── delete_collector
+│   └── list
+│       ├── list_collector
+│       └── list_item
+└── powershell
+    └── update
+        └── update_collector_config.ps1
 ```
 
-Use Case Usage
-==============
+Bash Script Usage
+=================
 
 1. To list the collectors you can issue:
 
@@ -78,6 +82,8 @@ NOTE: this creates a backup file of the collector in /tmp
 
 To Do List:
 ===========
+
+* Build out powershell examples for the bash counterparts
 
 License
 =======

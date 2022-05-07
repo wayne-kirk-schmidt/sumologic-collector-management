@@ -50,6 +50,7 @@ bin
     └── update
         └── update_collector_config.ps1
 ```
+NOTE: the update collector powershell script updates config files for an installed collector
 
 Bash Script Usage
 =================

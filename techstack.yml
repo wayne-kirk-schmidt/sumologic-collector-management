@@ -1,7 +1,8 @@
 repo_name: wayne-kirk-schmidt/sumologic-collector-management
 report_id: ad0f30fccaf96fec29ba5e9eefb7bb7d
+version: 0.1
 repo_type: Public
-timestamp: '2023-11-10T02:54:03+00:00'
+timestamp: '2024-01-05T09:03:20+00:00'
 requested_by: wks-sumo-logic
 provider: github
 branch: master
@@ -15,6 +16,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Version Control System
   image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/wayne-kirk-schmidt/sumologic-collector-management
   detection_source: Repo Metadata
 - name: PowerShell
   description: A task automation and configuration management framework
@@ -24,6 +26,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/3681/powershell-logo.png
+  detection_source_url: https://github.com/wayne-kirk-schmidt/sumologic-collector-management
   detection_source: Repo Metadata
 - name: Shell
   description: A shell is a text-based terminal, used for manipulating programs and
@@ -34,4 +37,5 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/4631/default_c2062d40130562bdc836c13dbca02d318205a962.png
+  detection_source_url: https://github.com/wayne-kirk-schmidt/sumologic-collector-management
   detection_source: Repo Metadata

@@ -2,7 +2,7 @@ repo_name: wayne-kirk-schmidt/sumologic-collector-management
 report_id: ad0f30fccaf96fec29ba5e9eefb7bb7d
 version: 0.1
 repo_type: Public
-timestamp: '2024-01-05T09:03:20+00:00'
+timestamp: '2024-02-29T18:26:03+00:00'
 requested_by: wks-sumo-logic
 provider: github
 branch: master
